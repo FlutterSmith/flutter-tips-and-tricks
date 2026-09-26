@@ -387,3 +387,18 @@ Need to know how long an async call takes? Wrap it in a small generic helper bui
 **Why not `DateTime.now()`?** Wall-clock time can jump (NTP sync, the user changing the clock), so the difference can be wrong or even negative. `Stopwatch` uses a monotonic clock.
 ````
 Test: `examples/test/tips/stopwatch_measure_time_test.dart` uses `fake_async` to assert the elapsed time.
+
+---
+
+## 12. Build log: where v0.1 departed from this plan
+
+Approved 2026-09-26: new public repo `FlutterSmith/tips`, companion app skipped, design as proposed.
+
+| Plan said | Built | Why |
+|---|---|---|
+| `// @note` at the end of a line | A `// @note` line annotates the line **below** it (trailing form still accepted) | `dart format` wraps long lines with trailing comments, which mangled snippets. Standalone comments are never reflowed, and they read naturally on GitHub. |
+| Astro content via prebuild copy | Astro 7 `glob({ base: '../content/tips' })` directly | The spike worked; no copy step needed. Astro 7's `unified()` processor carries our remark/rehype plugins. |
+| Numbers assigned at merge | `tips generate` assigns them and records them in `content/numbers.lock` | Parallel PRs now produce a visible merge conflict on the lock file instead of a silent collision. |
+| Golden screenshots for UI tips | Deferred to a later release | v0.1 tips prove layout with measured widget tests (exact pixel gaps and sizes) instead of images. |
+| OG share cards | Deferred to v1.0 as planned | — |
+| Tip render errors | Build now fails if any tip renders empty | Astro logs Markdown errors and carries on by default; one bug (Do/Don't pairing recursion) hid this way during the build. |
