@@ -1,0 +1,740 @@
+<title>fluttersmith/tips preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,400..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;1,400&family=Fragment+Mono:ital@0;1&family=Kalam:wght@400;700&display=swap">
+<style>
+:root{
+  --ground:#EEF1F4; --paper:#F8F9FB; --ink:#121722; --ink-2:#4A5363; --ink-3:#6B7484;
+  --rule:#D5DAE1; --guide:#0E8FAE; --guide-soft:rgba(14,143,174,.10);
+  --marker:#FFD54A; --marker-ink:#7A5200; --panel:#141A26; --panel-2:#1C2433; --panel-rule:#263044;
+  --code:#DCE3EE; --t-k:#63D3EE; --t-t:#B9A7FF; --t-s:#9ED99A; --t-c:#7D8AA3; --t-n:#FFB38A; --t-f:#F2E6B8;
+  --good:#1F8A5B; --bad:#C2412D; --hz-a:#F2B705; --hz-b:#161616;
+  --shadow:0 18px 50px -24px rgba(20,34,60,.45);
+  --display:"Anybody",ui-sans-serif,system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",ui-sans-serif,system-ui,sans-serif;
+  --mono:"Fragment Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --hand:"Kalam","Segoe Print","Bradley Hand",cursive;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0B0F17; --paper:#111724; --ink:#E6EAF0; --ink-2:#9AA4B5; --ink-3:#7A8496;
+    --rule:#232C3B; --guide:#3CC7E6; --guide-soft:rgba(60,199,230,.10);
+    --marker-ink:#FFD54A; --panel:#070A10; --panel-2:#0E131D; --panel-rule:#1C2433;
+    --good:#4CC38A; --bad:#FF7A66; --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0B0F17; --paper:#111724; --ink:#E6EAF0; --ink-2:#9AA4B5; --ink-3:#7A8496;
+  --rule:#232C3B; --guide:#3CC7E6; --guide-soft:rgba(60,199,230,.10);
+  --marker-ink:#FFD54A; --panel:#070A10; --panel-2:#0E131D; --panel-rule:#1C2433;
+  --good:#4CC38A; --bad:#FF7A66; --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased;padding-inline:clamp(16px,3vw,32px);padding-block:0 64px}
+a{color:inherit;text-decoration-color:var(--guide);text-decoration-thickness:1.5px;text-underline-offset:3px}
+a:hover{color:var(--guide)}
+:focus-visible{outline:2px solid var(--guide);outline-offset:2px;border-radius:2px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+kbd{font:500 11px/1 var(--mono);border:1px solid var(--rule);border-bottom-width:2px;border-radius:3px;padding:3px 5px;color:var(--ink-2);background:var(--paper)}
+.wrap{max-width:1240px;margin-inline:auto}
+.mono{font-family:var(--mono)}
+.label{font:500 11.5px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+
+/* preview frame note */
+.frame-note{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:10px;border-bottom:1px dashed var(--rule)}
+.frame-note span{font:12px/1.4 var(--mono);color:var(--ink-3)}
+.views{display:flex;gap:4px}
+.views button{font:500 12px/1 var(--mono);padding:7px 10px;border:1px solid transparent;border-radius:2px;color:var(--ink-2)}
+.views button[aria-selected="true"]{border-color:var(--guide);color:var(--ink);background:var(--guide-soft)}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in oklab,var(--ground) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);margin-inline:calc(-1*clamp(16px,3vw,32px));padding-inline:clamp(16px,3vw,32px)}
+.top .wrap{display:flex;align-items:center;gap:14px;height:60px}
+.brand{font:700 20px/1 var(--display);font-variation-settings:"wdth" 88;text-decoration:none;display:flex;align-items:baseline;gap:1px;white-space:nowrap}
+.brand b{font-weight:500;color:var(--ink-2)}
+.brand i{font-style:normal;color:var(--guide)}
+.spacer{flex:1}
+.search-btn{display:flex;align-items:center;gap:10px;border:1px solid var(--rule);background:var(--paper);border-radius:2px;padding:7px 8px 7px 12px;color:var(--ink-3);font-size:14px;min-width:220px;justify-content:space-between}
+.search-btn:hover{border-color:var(--guide)}
+.tool{display:flex;align-items:center;gap:8px;font:500 12px/1 var(--mono);color:var(--ink-2);padding:8px;border-radius:2px;min-height:40px}
+.tool:hover{color:var(--ink)}
+.switch{width:30px;height:16px;border:1.5px solid var(--ink-3);border-radius:2px;position:relative;transition:border-color .15s}
+.switch::after{content:"";position:absolute;inset:2px auto 2px 2px;width:9px;background:var(--ink-3);transition:transform .18s cubic-bezier(.2,.8,.2,1),background .15s}
+[aria-pressed="true"] .switch{border-color:var(--guide)}
+[aria-pressed="true"] .switch::after{transform:translateX(14px);background:var(--guide)}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:var(--guide);width:0}
+@media (max-width:760px){.search-btn{min-width:0}.search-btn .txt,.hide-sm{display:none}.top .wrap{gap:6px}.tool{padding:8px 6px}}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:center;padding-block:clamp(32px,6vw,72px) 40px}
+@media (max-width:980px){.hero{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(40px,6.2vw,72px);line-height:.98;font-weight:750;font-variation-settings:"wdth" 100;animation:settle .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes settle{from{font-variation-settings:"wdth" 64}to{font-variation-settings:"wdth" 100}}
+.hero h1 em{font-style:normal;position:relative;white-space:nowrap}
+.hero h1 em::after{content:"";position:absolute;left:-2px;right:-4px;bottom:.06em;height:.2em;background:var(--marker);opacity:.7;z-index:-1;transform:skewX(-8deg) rotate(-.6deg)}
+.lede{font-size:19px;color:var(--ink-2);max-width:34ch;margin:20px 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;border-radius:2px;font-weight:700;font-size:15.5px;text-decoration:none}
+.btn-main{background:var(--ink);color:var(--ground)}
+.btn-main kbd{background:transparent;color:var(--ground);border-color:color-mix(in oklab,var(--ground) 40%,transparent)}
+.btn-main:hover{background:var(--guide);color:#fff}
+.btn-ghost{border:1px solid var(--rule)}
+.btn-ghost:hover{border-color:var(--guide);color:var(--ink)}
+.verified{margin-top:28px;display:flex;gap:10px;align-items:flex-start;font:13px/1.5 var(--mono);color:var(--ink-2)}
+.verified .dot{width:8px;height:8px;margin-top:6px;background:var(--good);border-radius:50%;box-shadow:0 0 0 4px color-mix(in oklab,var(--good) 20%,transparent);flex:none}
+
+/* code panel */
+.panel{background:var(--panel);color:var(--code);border-radius:10px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.panel-head{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--panel-rule);font:12.5px/1 var(--mono);color:var(--t-c)}
+.panel-head .file{color:var(--code)}
+.panel-head .ok{color:#4CC38A;white-space:nowrap}
+.panel.compact .okt{display:none}
+.panel-head .spacer{flex:1}
+.copy{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:2px;color:var(--code);font:12.5px/1 var(--mono);min-height:32px}
+.copy:hover{background:var(--panel-2)}
+.copy svg{width:14px;height:14px}
+.panel-body{display:grid;grid-template-columns:minmax(0,1fr) 230px;position:relative}
+.panel.compact .panel-body{grid-template-columns:minmax(0,1fr)}
+pre.code{margin:0;padding:18px 0;overflow-x:auto;font:14.5px/1.75 var(--mono);tab-size:2}
+.ln{display:block;padding:0 18px 0 0;white-space:pre;transition:background .15s}
+.ln .no{display:inline-block;width:40px;padding-right:14px;text-align:right;color:#3E4A60;user-select:none}
+.ln.hl{background:rgba(255,213,74,.10);box-shadow:inset 2px 0 var(--marker)}
+.t-k{color:var(--t-k)}.t-t{color:var(--t-t)}.t-s{color:var(--t-s)}.t-c{color:var(--t-c);font-style:italic}.t-n{color:var(--t-n)}.t-f{color:var(--t-f)}
+.lane{position:relative}
+.panel.compact .lane{display:none}
+.note{position:absolute;left:18px;right:12px;font:400 17px/1.25 var(--hand);color:var(--marker);transform:rotate(-1.2deg);transform-origin:left center;cursor:default;transition:transform .2s}
+.note:nth-child(even){transform:rotate(.8deg)}
+.note:hover{transform:rotate(0) translateX(-2px)}
+svg.arrows{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+svg.arrows path{fill:none;stroke:var(--marker);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke-width .15s,stroke-dashoffset .5s cubic-bezier(.3,.7,.2,1)}
+svg.arrows path.on{stroke-width:2.6}
+.mk{display:none}
+.panel.compact .mk{display:inline-grid;place-items:center;width:18px;height:18px;margin-left:8px;border-radius:50%;background:var(--marker);color:#141A26;font:700 11px/1 var(--mono);vertical-align:1px}
+.notes-list{display:none;margin:0;padding:4px 18px 16px 44px;border-top:1px dashed var(--panel-rule);font:17px/1.35 var(--hand);color:var(--marker)}
+.panel.compact .notes-list{display:block}
+.notes-list li{padding:6px 0}
+.notes-list li.on{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.panel-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--panel-rule);font:12.5px/1.4 var(--mono);color:var(--t-c)}
+.panel-foot a{color:var(--code);text-decoration-color:var(--t-k)}
+.shuffle{color:var(--code);font:12.5px/1 var(--mono);display:flex;gap:6px;align-items:center;padding:6px 8px;border-radius:2px}
+.shuffle:hover{background:var(--panel-2)}
+
+/* index + latest */
+.home-grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,4vw,56px);border-top:1px solid var(--rule);padding-top:36px}
+@media (max-width:980px){.home-grid{grid-template-columns:1fr}}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.tree{font:14.5px/1 var(--mono);list-style:none;margin:0;padding:0}
+.tree .root{color:var(--ink-3);padding:6px 0 8px}
+.tree details summary{list-style:none;display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:7px 4px;cursor:pointer;border-radius:2px;min-height:36px}
+.tree details summary::-webkit-details-marker{display:none}
+.tree summary:hover{background:var(--guide-soft)}
+.tree .br{color:var(--rule);font-weight:700;white-space:pre}
+.tree .nm{font-family:var(--body);font-size:16px;font-weight:500}
+.tree .ct{color:var(--ink-3);font-variant-numeric:tabular-nums;font-size:13px}
+.tree details[open] .nm{color:var(--guide)}
+.tree .kids{list-style:none;margin:0;padding:0 0 6px}
+.tree .kids a{display:grid;grid-template-columns:auto 1fr;gap:8px;padding:5px 4px;text-decoration:none;font-size:14px;color:var(--ink-2)}
+.tree .kids a:hover{color:var(--ink)}
+.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.row{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 8px;border-bottom:1px solid var(--rule);text-decoration:none}
+.row .num{font:13px/1 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.row .ttl{font:600 17.5px/1.3 var(--body)}
+.row .sub{display:block;font-size:14.5px;color:var(--ink-2);font-weight:400;margin-top:3px}
+.row .meta{display:flex;align-items:center;gap:12px;font:12px/1 var(--mono);color:var(--ink-3)}
+.pips{display:inline-flex;gap:3px}.pips i{width:6px;height:10px;border:1.2px solid var(--ink-3);border-radius:1px}.pips i.f{background:var(--ink-2);border-color:var(--ink-2)}
+@media (max-width:620px){.row{grid-template-columns:40px minmax(0,1fr)}.row .meta{grid-column:2}}
+/* debug-paint hover */
+.dbg{position:relative}
+.dbg::before{content:"";position:absolute;inset:0;border:1px solid var(--guide);opacity:0;pointer-events:none;transition:opacity 80ms}
+.dbg::after{content:attr(data-size);position:absolute;right:0;top:-1px;transform:translateY(-100%);font:500 10.5px/1 var(--mono);background:var(--guide);color:var(--ground);padding:3px 5px;opacity:0;pointer-events:none;transition:opacity 80ms;font-variant-numeric:tabular-nums}
+.dbg:hover::before,.dbg:focus-visible::before,.dbg:hover::after,.dbg:focus-visible::after{opacity:1}
+.dbg:focus-visible{outline:none}
+.paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:40px}
+@media (max-width:760px){.paths{grid-template-columns:1fr}}
+.path h3{font-size:19px;font-weight:650;font-variation-settings:"wdth" 92;margin:6px 0 10px}
+.path ol{margin:0;padding:0 0 0 20px;color:var(--ink-2);font-size:15px}
+.path ol li{padding:2px 0}
+.path ol li::marker{font:12px var(--mono);color:var(--ink-3)}
+
+/* tip page */
+.tip{max-width:1060px;margin-inline:auto;padding-top:28px}
+.crumbs{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font:13px/1.4 var(--mono);color:var(--ink-3)}
+.crumbs a{text-decoration:none}
+.tip h1{font-size:clamp(34px,5vw,56px);line-height:1.02;font-weight:750;margin:26px 0 14px;max-width:18ch;animation:settle .5s cubic-bezier(.2,.8,.2,1) both}
+.metaline{display:flex;flex-wrap:wrap;gap:6px 18px;font:500 12px/1.4 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);padding-bottom:22px;border-bottom:1px solid var(--rule)}
+.metaline .ok{color:var(--good)}
+.prose{max-width:66ch}
+.prose p{margin:0 0 1em}
+.prose .lead{font-size:21px;line-height:1.5;margin:26px 0 28px;max-width:40ch}
+.tip .panel{margin:0 0 34px}
+code.i{font:0.88em var(--mono);background:var(--guide-soft);padding:1px 5px;border-radius:2px}
+.prose h2{font-size:24px;font-weight:700;font-variation-settings:"wdth" 90;margin:36px 0 12px}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:10px 0 30px}
+@media (max-width:760px){.dd{grid-template-columns:1fr}}
+.dd .panel{margin:0;box-shadow:none}
+.dd .tag{display:flex;align-items:center;gap:8px;font:600 13px/1 var(--mono);padding:10px 14px;border-bottom:1px solid var(--panel-rule)}
+.dd .bad .tag{color:#FF8E7C}.dd .good .tag{color:#58D69A}
+.dd pre.code{padding:14px 0;font-size:13.5px}
+.dd .why{padding:10px 14px 14px;font-size:14.5px;color:#AAB4C5;border-top:1px solid var(--panel-rule)}
+.changed{border-left:2px solid var(--guide);padding:4px 0 4px 16px;margin:28px 0;font-size:15.5px;color:var(--ink-2)}
+.changed b{color:var(--ink);font-weight:700}
+.tip-foot{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule);margin-top:44px}
+.tip-foot a{padding:18px 4px;text-decoration:none;display:block;min-height:44px}
+.tip-foot a + a{text-align:right;border-left:1px solid var(--rule)}
+.tip-foot .label{display:block;margin-bottom:6px}
+.tip-foot .t{font:650 18px/1.3 var(--display);font-variation-settings:"wdth" 92}
+.credit{margin-top:26px;font-size:13.5px;color:var(--ink-3);max-width:70ch}
+
+/* details */
+.details{padding-top:32px;display:grid;gap:56px}
+.details h2{font-size:28px;font-weight:720;font-variation-settings:"wdth" 88;margin-bottom:6px}
+.details .note-t{color:var(--ink-2);max-width:62ch;margin:0 0 18px;font-size:15.5px}
+.outdated{border:1px solid var(--rule);background:var(--paper)}
+.outdated .stripe{height:10px;background:repeating-linear-gradient(-45deg,var(--hz-a) 0 10px,var(--hz-b) 10px 20px)}
+.outdated p{margin:0;padding:14px 18px;font-size:15.5px}
+.outdated b{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-right:8px}
+.e404{background:var(--paper);border:1px solid var(--rule);display:grid;grid-template-columns:28px 1fr}
+.e404 .bar{background:repeating-linear-gradient(-45deg,var(--hz-a) 0 10px,var(--hz-b) 10px 20px)}
+.e404 .in{padding:26px 24px}
+.e404 .err{font:14px/1.5 var(--mono);color:var(--bad);margin:0 0 14px}
+.e404 h3{font-size:34px;font-weight:760;margin-bottom:8px}
+.e404 ul{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:4px}
+.e404 li a{font-weight:600}
+.og-wrap{overflow-x:auto}
+.og{width:600px;aspect-ratio:1200/630;background:var(--panel);border-radius:6px;position:relative;overflow:hidden;color:var(--code);padding:30px 32px;display:flex;flex-direction:column;justify-content:space-between;max-width:none}
+.og .h{font:760 34px/1.02 var(--display);font-variation-settings:"wdth" 86;color:#F1F4F8;max-width:15ch}
+.og pre{margin:0;font:13px/1.6 var(--mono)}
+.og .n{position:absolute;right:32px;top:170px;font:17px/1.2 var(--hand);color:var(--marker);transform:rotate(-2deg);width:150px}
+.og svg{position:absolute;inset:0;width:100%;height:100%}
+.og .f{display:flex;justify-content:space-between;font:12px var(--mono);color:var(--t-c)}
+.og .f b{color:var(--code);font-weight:400}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw{border:1px solid var(--rule);background:var(--paper)}
+.sw i{display:block;height:54px;border-bottom:1px solid var(--rule)}
+.sw div{padding:8px 10px;font:12px/1.4 var(--mono);color:var(--ink-2)}
+.sw b{display:block;color:var(--ink);font-weight:500}
+.types{display:grid;gap:18px}
+.types div{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:14px}
+@media (max-width:620px){.types div{grid-template-columns:1fr}}
+
+/* paint mode */
+body.paint .pb{outline:1px solid var(--guide);outline-offset:-1px;position:relative}
+body.paint .pb::after{content:attr(data-size);position:absolute;right:0;top:0;font:500 10px/1 var(--mono);background:var(--guide);color:var(--ground);padding:2px 4px;z-index:2;font-variant-numeric:tabular-nums;pointer-events:none}
+body.paint .pad{box-shadow:inset 0 0 0 12px var(--guide-soft)}
+body.paint .hero h1,body.paint .tip h1{background-image:linear-gradient(transparent calc(100% - 1px),var(--marker) 0);background-size:100% 1.02em}
+/* toast + palette */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--ground);padding:12px 16px;border-radius:2px;font-size:14.5px;max-width:calc(100vw - 32px);z-index:50;transition:opacity .2s,transform .25s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast code{font-family:var(--mono);color:var(--marker)}
+.pal-bg{position:fixed;inset:0;background:color-mix(in oklab,var(--ground) 60%,transparent);backdrop-filter:blur(3px);z-index:40;display:grid;align-items:start;justify-items:center;padding:calc(12vh + env(safe-area-inset-top,0px)) 16px 16px}
+.pal{width:min(640px,100%);background:var(--paper);border:1px solid var(--rule);box-shadow:0 30px 80px -30px rgba(0,0,0,.45)}
+.pal input{width:100%;border:0;border-bottom:1px solid var(--rule);background:transparent;padding:18px 18px;font:500 18px var(--body);color:var(--ink);outline:none}
+.pal ul{list-style:none;margin:0;padding:6px;max-height:50vh;overflow:auto}
+.pal li a{display:grid;grid-template-columns:44px 1fr;gap:4px 12px;padding:10px 12px;text-decoration:none;border-radius:2px}
+.pal li a:hover,.pal li a.sel{background:var(--guide-soft)}
+.pal .n{font:12px/1.6 var(--mono);color:var(--ink-3);grid-row:span 2}
+.pal .t{font-weight:600}
+.pal .c{font:12.5px/1.4 var(--mono);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pal .c mark{background:rgba(255,213,74,.45);color:inherit;padding:0 1px}
+.pal .empty{padding:18px;color:var(--ink-2)}
+.pal-foot{display:flex;gap:14px;padding:10px 14px;border-top:1px solid var(--rule);font:11.5px var(--mono);color:var(--ink-3)}
+.help{font:13px/1.9 var(--mono);color:var(--ink-2);margin:10px 0 0}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div class="frame-note wrap">
+  <span>Design preview · sample content · try <kbd>/</kbd> <kbd>r</kbd> <kbd>p</kbd> <kbd>t</kbd></span>
+  <div class="views" role="tablist" aria-label="Preview screens">
+    <button role="tab" id="tab-home" aria-selected="true" data-view="home">Home</button>
+    <button role="tab" id="tab-tip" aria-selected="false" data-view="tip">Tip page</button>
+    <button role="tab" id="tab-details" aria-selected="false" data-view="details">Details</button>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" data-go="home">fluttersmith<b>/</b><i>tips</i></a>
+    <span class="spacer"></span>
+    <button class="search-btn" id="open-search" aria-label="Search tips"><span class="txt">Search tips or APIs</span><kbd>/</kbd></button>
+    <button class="tool" id="paint" aria-pressed="false" title="Toggle debug paint (p)"><span class="switch"></span><span class="hide-sm">Paint</span></button>
+    <button class="tool" id="theme" title="Theme (t)"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg><span id="theme-l" class="hide-sm">System</span></button>
+    <a class="tool hide-sm" href="https://github.com/FlutterSmith" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main class="wrap">
+<!-- HOME -->
+<section id="v-home" data-v="home">
+  <div class="hero">
+    <div class="pb pad">
+      <h1 class="pb">Flutter tips that <em>still compile.</em></h1>
+      <p class="lede">140 short notes on Dart, widgets, Riverpod, testing and tooling. Every snippet is real code, analyzed and tested against current Flutter every week.</p>
+      <div class="cta">
+        <button class="btn btn-main" id="rand">Random tip <kbd>r</kbd></button>
+        <a class="btn btn-ghost" href="#index">Browse the index</a>
+      </div>
+      <div class="verified"><span class="dot"></span><span>Last check: 21 Sep 2026<br>Flutter 3.47.5 · Dart 3.13.4 · 140/140 passing</span></div>
+    </div>
+    <div class="pb" id="hero-panel-slot"></div>
+  </div>
+
+  <div class="home-grid" id="index">
+    <div class="pb">
+      <div class="sec-h"><span class="label">Index</span><span class="label">140 tips</span></div>
+      <ul class="tree" id="tree"></ul>
+    </div>
+    <div>
+      <div class="sec-h"><span class="label">Latest</span><a class="label" href="#rss">RSS</a></div>
+      <ul class="rows" id="rows"></ul>
+      <div class="paths">
+        <div class="path pb"><span class="label">Path · 9 tips</span><h3>Riverpod 3 from zero</h3><ol><li>Anatomy of a provider</li><li>watch, read, listen</li><li>AsyncValue without the boilerplate</li><li>Notifier with arguments</li></ol></div>
+        <div class="path pb"><span class="label">Path · 11 tips</span><h3>Testing Flutter apps</h3><ol><li>Why write tests at all</li><li>Fake repositories</li><li>Robot testing</li><li>Tags and variants</li></ol></div>
+        <div class="path pb"><span class="label">Path · 12 tips</span><h3>Modern Dart</h3><ol><li>Records</li><li>Patterns and switch</li><li>Sealed classes as Result</li><li>Extension types</li></ol></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIP -->
+<section id="v-tip" data-v="tip" hidden>
+  <article class="tip">
+    <div class="crumbs">
+      <span><a href="#" data-go="home">Index</a> / <a href="#" data-go="home">Dart language</a> / 057</span>
+      <span><a href="#" data-go="tip">← 056</a> &nbsp; <a href="#" data-go="tip">058 →</a></span>
+    </div>
+    <h1 class="pb">Measure execution time with Stopwatch</h1>
+    <div class="metaline pb"><span>Beginner</span><span>Dart language</span><span>2 min read</span><span class="ok">✓ Verified · Flutter 3.47.5 · 21 Sep 2026</span></div>
+    <div class="prose">
+      <p class="lead">Need to know how long an async call takes? Wrap it in a small helper built on <code class="i">Stopwatch</code>. It returns the result and the time it took.</p>
+    </div>
+    <div id="tip-panel-slot" class="pb"></div>
+    <div class="prose">
+      <h2>Why not DateTime.now()?</h2>
+      <p><code class="i">DateTime.now()</code> reads the wall clock. The wall clock can jump when the device syncs time or the user changes it, so the difference between two readings can be wrong, or even negative.</p>
+      <p><code class="i">Stopwatch</code> uses a monotonic clock. It only moves forward, which is exactly what you want when timing code.</p>
+    </div>
+    <div class="dd" id="dd"></div>
+    <div class="prose">
+      <div class="changed"><b>What changed since the original.</b> Upstream tip #116 timed code with <code class="i">DateTime.now().difference()</code>. This version uses <code class="i">Stopwatch</code> and returns a record, so callers get the value and the duration together.</div>
+      <h2>Pitfalls</h2>
+      <p>Timing a single run in debug mode tells you very little. Profile in <code class="i">--profile</code> mode, run it a few times, and look at the spread.</p>
+    </div>
+    <nav class="tip-foot" aria-label="Previous and next tip">
+      <a href="#" data-go="tip"><span class="label">← 056</span><span class="t">Column(spacing:) replaces the Gap package</span></a>
+      <a href="#" data-go="tip"><span class="label">058 →</span><span class="t">Future.wait with records</span></a>
+    </nav>
+    <p class="credit">Inspired by tip #116 in <a href="https://github.com/bizz84/flutter-tips-and-tricks" target="_blank" rel="noopener">Flutter Tips &amp; Tricks</a> by Andrea Bizzotto (MIT). Rewritten for this project. Not affiliated with or endorsed by the original author.</p>
+  </article>
+</section>
+
+<!-- DETAILS -->
+<section id="v-details" data-v="details" hidden>
+  <div class="details">
+    <div>
+      <h2>Outdated tip</h2>
+      <p class="note-t">The only loud element on the site. It uses Flutter's overflow stripes, because every Flutter developer reads them as "something here needs attention".</p>
+      <div class="outdated"><div class="stripe"></div><p><b>Outdated</b>Written for Riverpod 2. The idea still holds, but <code class="i">StateNotifierProvider</code> moved to <code class="i">legacy.dart</code> in Riverpod 3. <a href="#" data-go="tip">Read the updated tip</a>.</p></div>
+    </div>
+    <div>
+      <h2>404</h2>
+      <p class="note-t">A joke only Flutter developers get, then straight back to being useful.</p>
+      <div class="e404"><div class="bar"></div><div class="in">
+        <p class="err">A RenderFlex overflowed by 404 pixels on the right.</p>
+        <h3>This page doesn't exist.</h3>
+        <p style="margin:0;color:var(--ink-2)">It may have been renamed. These look close to what you were after:</p>
+        <ul><li><a href="#" data-go="tip">Riverpod: watch vs read vs listen</a></li><li><a href="#" data-go="tip">Getting a Future from a FutureProvider</a></li><li><a href="#" data-go="tip">Async init with requireValue</a></li></ul>
+      </div></div>
+    </div>
+    <div>
+      <h2>Share card</h2>
+      <p class="note-t">Generated for every tip at 1200×630. When someone shares a link, the preview looks like the site: one snippet, one handwritten note.</p>
+      <div class="og-wrap"><div class="og" id="og">
+        <div class="h">Getting a Future from a FutureProvider</div>
+        <pre><span class="t-k">final</span> a = <span class="t-k">await</span> ref.<span class="t-f">watch</span>(first.future);
+<span class="t-k">final</span> b = <span class="t-k">await</span> ref.<span class="t-f">watch</span>(second.future);
+<span class="t-k">return</span> a + b;</pre>
+        <div class="n">.future gives you the real Future</div>
+        <svg viewBox="0 0 600 315" aria-hidden="true"><path d="M452 186 C 420 168, 380 170, 330 178" fill="none" stroke="#FFD54A" stroke-width="1.8" stroke-linecap="round"/><path d="M340 171 L330 178 L341 184" fill="none" stroke="#FFD54A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="f"><b>fluttersmith/tips</b><span>#110 · State management</span></div>
+      </div></div>
+    </div>
+    <div>
+      <h2>Colour</h2>
+      <p class="note-t">Cool greys, one ink-dark code panel in both themes, and two accents taken from Flutter's debug paint: guide cyan and marker yellow. Toggle the theme to see both palettes.</p>
+      <div class="swatches" id="swatches"></div>
+    </div>
+    <div>
+      <h2>Type</h2>
+      <p class="note-t">Four faces, each with one job.</p>
+      <div class="types">
+        <div><span class="label">Display · Anybody</span><span style="font:750 40px/1 var(--display);font-variation-settings:'wdth' 86">Hot reload, cold facts</span></div>
+        <div><span class="label">Body · Atkinson Next</span><span style="font-size:18px">Readable at any size, designed for low-vision readers. Long explanations stay easy on the eyes.</span></div>
+        <div><span class="label">Code · Fragment Mono</span><span style="font:15px var(--mono)">ref.watch(userProvider.future)</span></div>
+        <div><span class="label">Notes · Kalam</span><span style="font:22px var(--hand);color:var(--marker-ink)">this is the bit that matters</span></div>
+      </div>
+    </div>
+    <div>
+      <h2>Keyboard</h2>
+      <p class="help"><kbd>/</kbd> search &nbsp; <kbd>r</kbd> random tip &nbsp; <kbd>←</kbd> <kbd>→</kbd> previous / next &nbsp; <kbd>c</kbd> copy snippet &nbsp; <kbd>p</kbd> paint &nbsp; <kbd>t</kbd> theme &nbsp; <kbd>?</kbd> help</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="pal-bg" id="pal" hidden>
+  <div class="pal" role="dialog" aria-modal="true" aria-label="Search tips">
+    <input id="q" type="search" placeholder="Search titles or code, e.g. requireValue" autocomplete="off">
+    <ul id="res"></ul>
+    <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+  </div>
+</div>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+/* ---------- sample content ---------- */
+const TIPS = [
+  { n: 110, file: 'combine_providers.dart', title: 'Getting a Future from a FutureProvider', cat: 'State management', code: [
+    "final total = FutureProvider<int>((ref) async {",
+    "  final a = await ref.watch(first.future);",
+    "  final b = await ref.watch(second.future);",
+    "  return a + b;",
+    "});"], notes: [[1, '.future gives you the real Future'], [3, 'combine them like any async code'], [4, 'still waiting? you get AsyncLoading']] },
+  { n: 57, file: 'measure.dart', title: 'Measure execution time with Stopwatch', cat: 'Dart language', code: [
+    "Future<(T, Duration)> measure<T>(",
+    "  Future<T> Function() action,",
+    ") async {",
+    "  final stopwatch = Stopwatch()..start();",
+    "  final result = await action();",
+    "  return (result, stopwatch.elapsed);",
+    "}"], notes: [[3, "monotonic: it can't jump backwards"], [5, 'a record: the value AND the time']] },
+  { n: 56, file: 'spacing.dart', title: 'Column(spacing:) replaces the Gap package', cat: 'Widgets & layout', code: [
+    "Column(",
+    "  spacing: 12,",
+    "  children: const [",
+    "    Text('Records'),",
+    "    Text('Patterns'),",
+    "    Text('Sealed classes'),",
+    "  ],",
+    ")"], notes: [[1, 'one number, no SizedBox between every child'], [5, 'no gap after the last child']] },
+  { n: 112, file: 'shapes.dart', title: 'Switch expressions with patterns', cat: 'Dart language', code: [
+    "String describe(Shape shape) => switch (shape) {",
+    "  Circle(:final radius) => 'circle, r = $radius',",
+    "  Square(:final side) when side > 10 => 'big square',",
+    "  Square() => 'square',",
+    "};"], notes: [[1, 'pull fields out right in the pattern'], [2, 'guards with when'], [4, 'sealed Shape: no default case needed']] },
+];
+const EXTRA = [
+  [131, 'Async init with requireValue', 'final prefs = ref.watch(prefsProvider).requireValue;'],
+  [46, 'Riverpod: watch vs read vs listen', 'ref.listen(authProvider, (prev, next) { ... });'],
+  [60, 'BuildContext across async gaps', 'if (!context.mounted) return;'],
+  [108, 'MediaQuery.sizeOf instead of of(context).size', 'final size = MediaQuery.sizeOf(context);'],
+  [141, 'debugPrint prints in release mode', "if (kDebugMode) debugPrint('...');"],
+  [62, 'Result with sealed classes', 'sealed class Result<T> { const Result(); }'],
+  [156, 'Debouncing with a Timer', '_timer?.cancel(); _timer = Timer(delay, action);'],
+  [36, 'go_router: go vs push', "context.push('/details/42');"],
+  [19, 'Robot testing for readable widget tests', 'await r.enterEmail(\'a@b.co\');'],
+  [158, 'Hide generated files in GitHub PRs', '*.g.dart linguist-generated=true'],
+];
+const SEARCH = [...TIPS.map(t => [t.n, t.title, t.code[t.notes[0][0]].trim()]), ...EXTRA];
+const TREE = [
+  ['Dart language', 30, ['Records', 'Patterns and switch', 'Stopwatch', 'Extension types']],
+  ['Widgets & layout', 28, ['Column(spacing:)', 'IntrinsicWidth', 'SelectionArea']],
+  ['State management', 20, ['Anatomy of a provider', 'watch vs read vs listen', 'requireValue']],
+  ['Testing', 15, ['Fake repositories', 'Robot testing', 'Test tags']],
+  ['Architecture', 12, ['Feature-first folders', 'Repositories as interfaces']],
+  ['Firebase & backend', 11, ['Collection count', 'OR queries']],
+  ['Tooling & IDE', 10, ['VSCode setup', 'dart fix --apply']],
+  ['Platform & release', 7, ['Flavors', 'dart-define-from-file']],
+  ['DevTools & performance', 5, ['Network inspector', 'Oversized images']],
+  ['Practices', 2, ['Starting a new app', 'Force-upgrade checklist']],
+];
+const LATEST = [
+  [57, 'Measure execution time with Stopwatch', "DateTime.now() isn't monotonic. Stopwatch is.", 1, 'dart'],
+  [56, 'Column(spacing:) replaces the Gap package', 'One parameter instead of a SizedBox between every child.', 1, 'widgets'],
+  [55, 'Riverpod 3: Notifier replaces StateNotifier', 'What moved to legacy.dart, and the three-line migration.', 2, 'state'],
+  [54, 'Result with sealed classes', 'Exhaustive error handling without a package.', 2, 'dart'],
+  [53, 'package:web instead of dart:html', 'Redirect to an external URL in a Wasm-ready way.', 3, 'platform'],
+];
+
+/* ---------- dart tokenizer ---------- */
+const KW = new Set('final const var async await return if else switch case when for in class extends with implements new this super late required void null true false try catch on throw import sealed'.split(' '));
+function hl(line) {
+  let out = '';
+  line.replace(/(\/\/.*$)|('(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|(\s+)|([\s\S])/g,
+    (m, com, str, num, id, ws, p, off) => {
+      if (com) out += `<span class="t-c">${esc(com)}</span>`;
+      else if (str) out += `<span class="t-s">${esc(str)}</span>`;
+      else if (num) out += `<span class="t-n">${num}</span>`;
+      else if (id) {
+        const cls = KW.has(id) ? 't-k' : /^[A-Z]/.test(id) ? 't-t' : line[off + id.length] === '(' ? 't-f' : '';
+        out += cls ? `<span class="${cls}">${id}</span>` : id;
+      } else out += esc(m);
+      return m;
+    });
+  return out;
+}
+
+/* ---------- annotated code panel ---------- */
+const COPY_SVG = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 11V3a1 1 0 0 1 1-1h7" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
+const CHECK_SVG = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function panel(tip, { shuffle = false } = {}) {
+  const el = document.createElement('figure');
+  el.className = 'panel';
+  el.style.margin = '0';
+  const noteAt = new Map(tip.notes.map(([l, t], i) => [l, i]));
+  const lines = tip.code.map((c, i) => `<span class="ln" data-l="${i}"><span class="no">${i + 1}</span><span class="lc">${hl(c)}</span>${noteAt.has(i) ? `<button class="mk" data-n="${noteAt.get(i)}" aria-label="Note ${noteAt.get(i) + 1}">${noteAt.get(i) + 1}</button>` : ''}</span>`).join('');
+  el.innerHTML = `
+    <div class="panel-head"><span class="file">${tip.file}</span><span class="ok">✓<span class="okt"> analyzed · tested</span></span><span class="spacer"></span>
+      <button class="copy" data-copy>${COPY_SVG}<span>Copy</span></button></div>
+    <div class="panel-body"><pre class="code"><code>${lines}</code></pre>
+      <div class="lane">${tip.notes.map(([l, t], i) => `<div class="note" data-n="${i}" data-l="${l}">${esc(t)}</div>`).join('')}</div>
+      <svg class="arrows" aria-hidden="true"></svg></div>
+    <ol class="notes-list">${tip.notes.map(([l, t], i) => `<li data-n="${i}">${esc(t)}</li>`).join('')}</ol>
+    <figcaption class="panel-foot"><span>#${String(tip.n).padStart(3, '0')} · ${tip.title}</span>${shuffle ? '<button class="shuffle" data-shuffle>↻ Another tip</button>' : '<span>Dart 3.13</span>'}</figcaption>`;
+  el._tip = tip;
+  return el;
+}
+
+// seeded wobble so arrows look hand-drawn but stay stable between renders
+function rng(seed) { return () => ((seed = (seed * 16807) % 2147483647) / 2147483647); }
+function arrowPath(x0, y0, x1, y1, seed) {
+  const r = rng(seed * 97 + 13);
+  const cx = (x0 + x1) / 2, cy = Math.min(y0, y1) - 26 - Math.abs(y0 - y1) * 0.2;
+  const pts = [];
+  for (let i = 0; i <= 18; i++) {
+    const t = i / 18, u = 1 - t;
+    let x = u * u * x0 + 2 * u * t * cx + t * t * x1;
+    let y = u * u * y0 + 2 * u * t * cy + t * t * y1;
+    const w = Math.sin(Math.PI * t) * 1.3;
+    x += (r() - .5) * w; y += (r() - .5) * w;
+    pts.push([x, y]);
+  }
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 1; i < pts.length; i++) d += ` L${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)}`;
+  const [ax, ay] = pts[pts.length - 3], ang = Math.atan2(y1 - ay, x1 - ax), L = 9;
+  const h = a => `${(x1 - L * Math.cos(ang + a)).toFixed(1)} ${(y1 - L * Math.sin(ang + a)).toFixed(1)}`;
+  return [d, `M${h(0.5)} L${x1.toFixed(1)} ${y1.toFixed(1)} L${h(-0.5)}`];
+}
+
+function layout(el, animate) {
+  const compact = el.clientWidth < 600;
+  el.classList.toggle('compact', compact);
+  const svg = $('svg.arrows', el);
+  svg.innerHTML = '';
+  if (compact) return;
+  const body = $('.panel-body', el).getBoundingClientRect();
+  const lane = $('.lane', el).getBoundingClientRect();
+  let lastBottom = -Infinity;
+  $$('.note', el).forEach((note, i) => {
+    const ln = $(`.ln[data-l="${note.dataset.l}"]`, el);
+    const lr = ln.getBoundingClientRect();
+    const text = $('.lc', ln).getBoundingClientRect();
+    let top = lr.top + lr.height / 2 - body.top - 11;
+    top = Math.max(top, lastBottom + 10);
+    note.style.top = top + 'px';
+    lastBottom = top + note.offsetHeight;
+    const x0 = lane.left - body.left + 12, y0 = top + 12;
+    const x1 = Math.min(text.right - body.left + 12, lane.left - body.left - 28), y1 = lr.top + lr.height / 2 - body.top;
+    const [d, head] = arrowPath(x0, y0, x1, y1, i + 1 + el._tip.n);
+    [d, head].forEach((p, k) => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', p); path.setAttribute('pathLength', '1'); path.dataset.n = i;
+      if (animate && !reduced) {
+        path.style.strokeDasharray = '1'; path.style.strokeDashoffset = '1';
+        path.style.transitionDelay = (i * 140 + k * 380) + 'ms';
+        requestAnimationFrame(() => requestAnimationFrame(() => { path.style.strokeDashoffset = '0'; }));
+      }
+      svg.appendChild(path);
+    });
+  });
+}
+
+function wire(el) {
+  const focus = (n, on) => {
+    const l = el._tip.notes[n][0];
+    $(`.ln[data-l="${l}"]`, el).classList.toggle('hl', on);
+    $$(`svg.arrows path[data-n="${n}"]`, el).forEach(p => p.classList.toggle('on', on));
+    $(`.notes-list li[data-n="${n}"]`, el).classList.toggle('on', on);
+  };
+  $$('.note', el).forEach(n => {
+    n.addEventListener('mouseenter', () => focus(+n.dataset.n, true));
+    n.addEventListener('mouseleave', () => focus(+n.dataset.n, false));
+  });
+  $$('.mk', el).forEach(m => m.addEventListener('click', () => {
+    const n = +m.dataset.n;
+    $$('.ln.hl, .notes-list li.on', el).forEach(x => x.classList.remove('hl', 'on'));
+    focus(n, true);
+    setTimeout(() => focus(n, false), 1800);
+  }));
+  $('[data-copy]', el).addEventListener('click', e => copy(el, e.currentTarget));
+  new ResizeObserver(() => layout(el, false)).observe(el);
+}
+
+async function copy(el, btn) {
+  const text = el._tip.code.join('\n');
+  try { await navigator.clipboard.writeText(text); }
+  catch { const r = document.createRange(); r.selectNodeContents($('pre', el)); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  btn.innerHTML = CHECK_SVG + '<span>Copied</span>';
+  setTimeout(() => { btn.innerHTML = COPY_SVG + '<span>Copy</span>'; }, 1400);
+}
+
+function mount(slot, tip, opts) {
+  const el = panel(tip, opts);
+  slot.replaceChildren(el);
+  wire(el);
+  requestAnimationFrame(() => layout(el, true));
+  const sh = $('[data-shuffle]', el);
+  if (sh) sh.addEventListener('click', randomTip);
+  return el;
+}
+
+let heroIdx = 0;
+function randomTip() {
+  heroIdx = (heroIdx + 1 + Math.floor(Math.random() * (TIPS.length - 1))) % TIPS.length;
+  mount($('#hero-panel-slot'), TIPS[heroIdx], { shuffle: true });
+}
+
+/* ---------- home: tree + rows ---------- */
+$('#tree').innerHTML = `<li class="root">Tips(</li>` + TREE.map(([name, ct, kids], i) => {
+  const last = i === TREE.length - 1;
+  return `<li><details${i === 0 ? ' open' : ''}><summary><span class="br">${last ? '└─' : '├─'}</span><span class="nm">${name}</span><span class="ct">${ct}</span></summary>
+    <ul class="kids">${kids.map((k, j) => `<li><a href="#" data-go="tip"><span class="br">${last ? '   ' : '│  '}${j === kids.length - 1 ? '└─' : '├─'}</span>${k}</a></li>`).join('')}
+    <li><a href="#" data-go="home"><span class="br">${last ? '   ' : '│  '}  </span>Show all ${ct} →</a></li></ul></details></li>`;
+}).join('') + `<li class="root" style="padding-top:8px">)</li>`;
+
+$('#rows').innerHTML = LATEST.map(([n, t, s, lvl, tag]) => `
+  <li><a class="row dbg" href="#" data-go="tip"><span class="num">${String(n).padStart(3, '0')}</span>
+  <span class="ttl">${t}<span class="sub">${s}</span></span>
+  <span class="meta"><span class="pips" title="Level ${lvl} of 3">${[1, 2, 3].map(i => `<i class="${i <= lvl ? 'f' : ''}"></i>`).join('')}</span>${tag}</span></a></li>`).join('');
+
+$$('.dbg').forEach(d => {
+  const upd = () => { const r = d.getBoundingClientRect(); d.dataset.size = `${Math.round(r.width)} × ${Math.round(r.height)}`; };
+  d.addEventListener('mouseenter', upd); d.addEventListener('focus', upd);
+});
+
+/* ---------- tip page ---------- */
+const tipPanel = () => mount($('#tip-panel-slot'), TIPS[1]);
+$('#dd').innerHTML = [
+  ['bad', '✗ Avoid', ["final start = DateTime.now();", "await work();", "final took = DateTime.now().difference(start);"], 'Wall-clock time. Can jump during a sync.'],
+  ['good', '✓ Prefer', ["final stopwatch = Stopwatch()..start();", "await work();", "final took = stopwatch.elapsed;"], 'Monotonic. Only moves forward.'],
+].map(([k, label, code, why]) => `<div class="panel ${k}"><div class="tag">${label}</div><pre class="code"><code>${code.map((c, i) => `<span class="ln"><span class="no">${i + 1}</span>${hl(c)}</span>`).join('')}</code></pre><div class="why">${why}</div></div>`).join('');
+
+/* ---------- details: swatches ---------- */
+const SW = [['--ground', 'Ground'], ['--paper', 'Paper'], ['--ink', 'Ink'], ['--ink-2', 'Ink 2'], ['--rule', 'Rule'], ['--guide', 'Guide cyan'], ['--marker', 'Marker'], ['--panel', 'Code panel']];
+function swatches() {
+  const cs = getComputedStyle(document.documentElement);
+  $('#swatches').innerHTML = SW.map(([v, n]) => `<div class="sw"><i style="background:var(${v})"></i><div><b>${n}</b>${cs.getPropertyValue(v).trim()}</div></div>`).join('');
+}
+
+/* ---------- views ---------- */
+function go(view) {
+  const run = () => {
+    $$('[data-v]').forEach(s => { s.hidden = s.dataset.v !== view; });
+    $$('.views button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === view));
+    if (view === 'tip') tipPanel();
+    if (view === 'details') swatches();
+    if (view === 'home') mount($('#hero-panel-slot'), TIPS[heroIdx], { shuffle: true });
+    scrollTo({ top: 0 });
+    measurePaint();
+  };
+  if (document.startViewTransition && !reduced) document.startViewTransition(run); else run();
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-go]');
+  if (t) { e.preventDefault(); go(t.dataset.go); }
+  const v = e.target.closest('.views button');
+  if (v) go(v.dataset.view);
+});
+$('#rand').addEventListener('click', randomTip);
+
+/* ---------- theme (System → Light → Dark) ---------- */
+const THEMES = ['system', 'light', 'dark'];
+let theme = 'system';
+try { theme = localStorage.getItem('fs-theme') || 'system'; } catch {}
+function applyTheme() {
+  if (theme === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', theme);
+  $('#theme-l').textContent = theme[0].toUpperCase() + theme.slice(1);
+  if (!$('#v-details').hidden) swatches();
+}
+$('#theme').addEventListener('click', () => {
+  theme = THEMES[(THEMES.indexOf(theme) + 1) % 3];
+  try { localStorage.setItem('fs-theme', theme); } catch {}
+  applyTheme();
+});
+
+/* ---------- paint mode ---------- */
+const toastEl = $('#toast'); let toastT;
+function toast(html) { toastEl.innerHTML = html; toastEl.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), 3200); }
+function measurePaint() {
+  if (!document.body.classList.contains('paint')) return;
+  $$('.pb').forEach(el => { const r = el.getBoundingClientRect(); el.dataset.size = `${Math.round(r.width)} × ${Math.round(r.height)}`; });
+}
+$('#paint').addEventListener('click', e => {
+  const on = document.body.classList.toggle('paint');
+  e.currentTarget.setAttribute('aria-pressed', on);
+  measurePaint();
+  if (on) toast('This is what <code>debugPaintSizeEnabled = true</code> does to a Flutter app.');
+});
+addEventListener('resize', measurePaint);
+
+/* ---------- search palette ---------- */
+const pal = $('#pal'), q = $('#q'), res = $('#res'); let sel = 0;
+function render() {
+  const term = q.value.trim().toLowerCase();
+  const hits = SEARCH.filter(([, t, c]) => !term || t.toLowerCase().includes(term) || c.toLowerCase().includes(term)).slice(0, 8);
+  sel = 0;
+  if (!hits.length) { res.innerHTML = `<li class="empty">Nothing for “${esc(q.value)}”. Try an API name like <code class="i">ref.listen</code>.</li>`; return; }
+  const mark = s => { if (!term) return esc(s); const i = s.toLowerCase().indexOf(term); return i < 0 ? esc(s) : esc(s.slice(0, i)) + '<mark>' + esc(s.slice(i, i + term.length)) + '</mark>' + esc(s.slice(i + term.length)); };
+  res.innerHTML = hits.map(([n, t, c], i) => `<li><a href="#" data-go="tip" class="${i === 0 ? 'sel' : ''}"><span class="n">${String(n).padStart(3, '0')}</span><span class="t">${esc(t)}</span><span class="c">${mark(c)}</span></a></li>`).join('');
+}
+function openSearch() { pal.hidden = false; q.value = ''; render(); q.focus(); }
+function closeSearch() { pal.hidden = true; }
+$('#open-search').addEventListener('click', openSearch);
+q.addEventListener('input', render);
+pal.addEventListener('click', e => { if (e.target === pal || e.target.closest('[data-go]')) closeSearch(); });
+q.addEventListener('keydown', e => {
+  const items = $$('a', res);
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault(); if (!items.length) return;
+    items[sel].classList.remove('sel');
+    sel = (sel + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length;
+    items[sel].classList.add('sel'); items[sel].scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'Enter' && items[sel]) { closeSearch(); go('tip'); }
+});
+
+/* ---------- keyboard ---------- */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !pal.hidden) return closeSearch();
+  if (e.target.matches('input, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  if (k === '/') { e.preventDefault(); openSearch(); }
+  else if (k === 'r') { if ($('#v-home').hidden) go('home'); randomTip(); }
+  else if (k === 'p') $('#paint').click();
+  else if (k === 't') $('#theme').click();
+  else if (k === 'c') { const p = $('[data-v]:not([hidden]) .panel [data-copy]'); if (p) p.click(); }
+  else if (k === '?') { go('details'); setTimeout(() => $('.help').scrollIntoView({ block: 'center' }), 50); }
+  else if ((k === 'ArrowRight' || k === 'ArrowLeft') && !$('#v-tip').hidden) { toast(k === 'ArrowRight' ? 'Next tip → 058' : 'Previous tip ← 056'); }
+});
+
+/* ---------- reading progress ---------- */
+addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  $('#progress').style.width = (h > 0 ? scrollY / h * 100 : 0) + '%';
+}, { passive: true });
+
+applyTheme();
+mount($('#hero-panel-slot'), TIPS[0], { shuffle: true });
+document.fonts && document.fonts.ready.then(() => $$('.panel').forEach(p => p._tip && layout(p, false)));
+})();
+</script>
